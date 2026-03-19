@@ -8,6 +8,13 @@ Sistem ini digunakan untuk menghasilkan dataset teks panjang berkualitas tinggi 
 3.  **Perlindungan Privasi:** Mendeteksi dan menyensor NIK (16 digit), Email, dan Nomor Telepon secara otomatis dari teks yang dihasilkan, menjaga keamanan data.
 4.  **Export & View CSV:** Menyimpan dataset ke dalam format CSV dan melihat isinya dengan mudah langsung di terminal.
 
+## Arsitektur "Enterprise-Grade"
+- **Asynchronous & Concurrent:** Menggunakan `AsyncOpenAI` dan `asyncio` untuk mengirim banyak request secara paralel, mempercepat proses augmentasi secara masif.
+- **Actor-Critic AI Generation:** AI tidak sekadar menghasilkan teks, melainkan menggunakan pola dua model: satu bertindak sebagai pembuat konten (Actor), dan satu bertindak sebagai validator/pengoreksi format (Critic).
+- **Strict Validation:** Menggunakan `Pydantic` untuk memastikan skema JSON yang dikembalikan oleh LLM 100% valid dan sesuai struktur.
+- **Dynamic Pseudonymization:** Privasi menggunakan `Faker` id_ID untuk mengganti entitas NIK, Email, dan Nomor HP asli dengan data sintetik yang masuk akal namun palsu, bukan sekadar memberikan teks sensor kaku, sehingga model AI tetap bisa mempelajari pola kalimat secara natural.
+- **Big Data Storage:** Mendukung format file modern untuk data besar seperti `Parquet` dan `JSONL`, selain format `CSV` tradisional.
+
 ## Cara Instalasi
 1. Pastikan Anda sudah menginstal Python (direkomendasikan versi 3.8 ke atas).
 2. Install library yang dibutuhkan:

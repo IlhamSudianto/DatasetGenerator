@@ -1,3 +1,6 @@
 openai
 pandas
 python-dotenv
+pydantic
+faker
+pyarrow
