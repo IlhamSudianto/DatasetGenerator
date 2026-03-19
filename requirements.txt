@@ -4,3 +4,8 @@ python-dotenv
 pydantic
 faker
 pyarrow
+nemo-curator
+dask
+distributed
+jupyter
+ipykernel

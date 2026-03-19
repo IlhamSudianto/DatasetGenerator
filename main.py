@@ -4,6 +4,7 @@ import logging
 import asyncio
 from async_generator import AsyncDatasetGenerator
 from dataset_viewer import DatasetStorage
+from curator_pipeline import CurationPipeline
 
 # Setup logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -35,9 +36,28 @@ async def main():
 
     if generated_data:
         prefix = "advanced_generated"
-        DatasetStorage.save(generated_data, filename_prefix=prefix, formats=['csv', 'jsonl', 'parquet'])
-        print("\n✨ Hasil Data (dengan Pseudonimisasi Dinamis menggunakan Faker):")
-        DatasetStorage.view_terminal(f"{prefix}.parquet", num_rows=3)
+        DatasetStorage.save(generated_data, filename_prefix=prefix, formats=['jsonl', 'csv'])
+        print("\n✨ Hasil Data Awal (dengan Pseudonimisasi Dinamis menggunakan Faker):")
+        DatasetStorage.view_terminal(f"{prefix}.jsonl", num_rows=3)
+
+        # -----------------------------
+        # CURATION PIPELINE INTEGRATION
+        # -----------------------------
+        print("\n" + "-"*80)
+        print("Mulai NeMo-Style Curation pada hasil Generate (Pembersihan, Filter, Deduplikasi)")
+
+        curator = CurationPipeline()
+        curated_output = "advanced_curated.jsonl"
+
+        # Berikan file input jsonl untuk diproses
+        success = curator.run_pipeline(input_path=f"{prefix}.jsonl", output_path=curated_output, text_field="text")
+
+        if success:
+            print(f"\n✨ Hasil Data Kurasi Akhir (Bebas duplikat, bersih Unicode, Word Count Valid):")
+            DatasetStorage.view_terminal(curated_output, num_rows=3)
+        else:
+            logger.error("Gagal menjalankan pipeline kurasi.")
+
     else:
         logger.warning("Gagal menghasilkan dataset.")
 
